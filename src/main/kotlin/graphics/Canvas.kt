@@ -2,13 +2,17 @@ package graphics
 
 import java.io.File
 
-class Canvas(private val width: UInt, private val height: UInt) {
-    private val scene: Array<Color> = Array((width * height).toInt()) { Color(0x00000000u) }
+class Canvas(val width: UInt, val height: UInt) {
+    private val scene: Array<Color> = Array((width * height).toInt()) { Color(0xFF000000u) }
 
     fun fill(color: Color) {
         for (i in 0 until (width * height).toInt()) {
             scene[i] = color
         }
+    }
+
+    fun getRawPixels(): List<Color> {
+        return scene.toList()
     }
 
     fun writeAt(x: Int, y: Int, color: Color) {
