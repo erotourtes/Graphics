@@ -55,4 +55,19 @@ class ShapesTest {
         val testCanvas = ppmToCanvas(testFile)
         assertIterableEquals(canvas.getRawPixels(), testCanvas.getRawPixels())
     }
+
+    @Test
+    fun opacity() {
+        val testFile = "src/test/resources/test-${methodName()}.ppm"
+
+        shapes.color = ColorFactory.yellow.builder().alpha(100u).build()
+        shapes.drawTriangle(Point(0, 0), Point(0, 19), Point(19, 0))
+        shapes.color = ColorFactory.lightGreen.builder().alpha(100u).build()
+        shapes.drawCircle(Point(9, 9), 5)
+        shapes.color = ColorFactory.darkGreen.builder().alpha(50u).build()
+        shapes.drawRec(Point(0, 0), Point(9, 19))
+
+        val testCanvas = ppmToCanvas(testFile)
+        assertIterableEquals(canvas.getRawPixels(), testCanvas.getRawPixels())
+    }
 }

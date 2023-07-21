@@ -3,16 +3,18 @@ import graphics.Color
 import graphics.ColorFactory
 import graphics.Shapes
 import java.awt.Point
+import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
 
 
 fun main() {
-
     val canvas = Canvas(20u, 20u)
     canvas.fill(Color())
     val shapes = Shapes(canvas)
-    for(i in 0..10) {
-        shapes.drawLine(Point(2*i, 0), Point(2*i, 20))
-        shapes.drawLine(Point(0, 2*i), Point(20, 2*i))
+    for (i in 0..10) {
+        shapes.drawLine(Point(2 * i, 0), Point(2 * i, 20))
+        shapes.drawLine(Point(0, 2 * i), Point(20, 2 * i))
     }
 
     shapes.color = ColorFactory.green(30u)

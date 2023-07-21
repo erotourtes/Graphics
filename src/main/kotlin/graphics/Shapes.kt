@@ -40,6 +40,14 @@ class Shapes(private val canvas: Canvas) {
         }
     }
 
+    fun drawRec(p1: Point, p2: Point) {
+        for (y in p1.y.range(p2.y)) {
+            for (x in p1.x.range(p2.x)) {
+                canvas.writeAt(x, y, color)
+            }
+        }
+    }
+
     fun drawTriangle(p0: Point, p1: Point, p2: Point) {
         val points = arrayOf(p0, p1, p2).apply { this.sortBy { it.y } }
         drawHalfOfTriangle(points[0], points[1], points[2])
@@ -53,6 +61,8 @@ class Shapes(private val canvas: Canvas) {
         for (y in p0.y.range(p1.y)) {
             val startX = if (p0.y == p1.y || p0.x == p1.x) p0.x else ((y - b1) / k1).toInt()
             val endX = if (p0.y == p2.y || p0.x == p2.x) p0.x else ((y - b2) / k2).toInt()
+
+            if (p0.y == p1.y && startX == endX) return
 
             for (x in startX.range(endX)) canvas.writeAt(x, y, color)
         }
