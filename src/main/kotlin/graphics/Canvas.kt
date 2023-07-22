@@ -1,11 +1,10 @@
 package graphics
 
-import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
+import java.awt.Point
 
 class Canvas(val width: UInt, val height: UInt) {
     private val scene: Array<Color> = Array((width * height).toInt()) { Color(0xFF000000u) }
+    private val saver = CanvasSaver()
 
     var isMixingColors = true
 
@@ -24,25 +23,60 @@ class Canvas(val width: UInt, val height: UInt) {
         else scene[position] = color
     }
 
+    fun isInBoundaries(vararg point: Point): Boolean =
+        point.all { (x, y) -> 0 <= x && x < width.toInt() && 0 <= y && y < height.toInt() }
+
+    fun getAt(point: Point): Color {
+        if (!isInBoundaries(point)) throw IllegalArgumentException()
+
+        val position = (point.y * width.toInt() + point.x)
+        return scene[position]
+    }
+
+
     fun saveToPPM(path: String = "src/main/resources/test.ppm") {
-        val file = File(path)
+        saver.saveToPPM(scene, width.toInt(), height.toInt(), path)
+    }
 
-        file.bufferedWriter().use {
-            it.write("P3\n$width $height\n255\n")
+    inner class CanvasView(from: Point, to: Point) {
+        val from: Point
+        val to: Point
 
-            for (color in scene) {
-                it.appendLine(color.toString())
+        init {
+            val (x1, y1) = from
+            val (x2, y2) = to
+
+            this.from = Point(x1.coerceAtMost(x2), y1.coerceAtMost(y2))
+            this.to = Point(x1.coerceAtLeast(x2), y1.coerceAtLeast(y2))
+        }
+
+        private val width get() = to.x - from.x + 1
+        private val height get() = to.y - from.y + 1
+
+        private val sceneView = Array(width * height) { Color() }
+            get() {
+                for (y in from.y..to.y) {
+                    for (x in from.x..to.x) {
+                        val position = (y - from.y) * width + (x - from.x)
+                        field[position] = getAt(Point(x, y))
+                    }
+                }
+
+                return field
             }
+
+        fun getRawPixels() = sceneView.toList()
+
+        fun saveToPPM(path: String = "src/main/resources/test-view.ppm") {
+            saver.saveToPPM(sceneView, width, height, path)
         }
     }
+}
 
-    fun saveToPNG(path: String = "src/main/resources/test.png") {
-        val img = BufferedImage(width.toInt(), height.toInt(), BufferedImage.TYPE_INT_RGB)
-        val data = getRawPixels().map { color -> color.getValues().map { it.toByte() }}.flatten()
-        img.raster.setDataElements(0, 0, width.toInt(), height.toInt(), data.toByteArray())
-        val file = File(path)
-        ImageIO.write(img, "PNG", file)
+private operator fun Point.component1(): Int {
+    return this.x
+}
 
-        TODO("fix it!")
-    }
+private operator fun Point.component2(): Int {
+    return this.y
 }

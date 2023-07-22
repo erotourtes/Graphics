@@ -1,7 +1,5 @@
 package graphics
 
-import java.util.LinkedList
-
 class Color(color: UInt = 0xFF000000u) {
     // color 0xAARRGGBB
     val alpha = color shr 8 * 3 and 0xFFu
@@ -71,8 +69,9 @@ object ColorFactory {
     fun green(value: UInt = 255u) = Color.builder().green(value).build()
     fun blue(value: UInt = 255u) = Color.builder().blue(value).build()
 
-    val yellow = Color(0xF7B32Bu)
-    val lightGreen = Color(0x89CE94u)
-    val darkGreen = Color(0x297373u)
-    val purple = Color(0x7D5BA6u)
+    val yellow = Color(0xFFF7B32Bu)
+    val lightGreen = Color(0xFF89CE94u)
+    val darkGreen = Color(0xFF297373u)
+    val purple = Color(0xFF7D5BA6u)
+    val blank = Color()
 }
