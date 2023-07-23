@@ -6,11 +6,23 @@ import java.util.*
 import javax.imageio.ImageIO
 
 object CanvasSaver {
-    fun saveToPPM(canvas: Canvas, name: String, path: String = "src/main/resources/") {
-        val (width, height) = canvas.getDimensions()
-        val scene = canvas.getRawPixels()
 
-        val file = File("$path$name.ppm")
+    fun saveToPPM(canvas: Canvas, fullPath: String) {
+        val last = fullPath.lastIndexOf('/')
+
+        val (width, height) = canvas.getDimensions()
+        saveToPPM(canvas.getRawPixels(), width, height, fullPath.substring(last + 1), fullPath.substring(0, last + 1))
+    }
+
+    fun saveToPPM(view: Canvas.CanvasView, fullPath: String) {
+        val last = fullPath.lastIndexOf('/')
+
+        val (width, height) = Pair(view.width, view.height)
+        saveToPPM(view.getRawPixels(), width, height, fullPath.substring(last + 1), fullPath.substring(0, last + 1))
+    }
+
+    fun saveToPPM(scene: List<Color>, width: Int, height: Int, name: String, path: String = "src/main/resources/") {
+        val file = File("$path${if (name.endsWith(".ppm")) name else "$name.ppm"}")
 
         file.bufferedWriter().use {
             it.write("P3\n${width} ${height}\n255\n")

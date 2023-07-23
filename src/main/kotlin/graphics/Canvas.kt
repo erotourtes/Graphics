@@ -46,8 +46,8 @@ class Canvas(val width: UInt, val height: UInt) {
             this.to = Point(x1.coerceAtLeast(x2), y1.coerceAtLeast(y2))
         }
 
-        private val width get() = to.x - from.x + 1
-        private val height get() = to.y - from.y + 1
+        val width get() = to.x - from.x + 1
+        val height get() = to.y - from.y + 1
 
         private val sceneView = Array(width * height) { Color() }
             get() {

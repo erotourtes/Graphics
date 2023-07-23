@@ -16,6 +16,7 @@ class ShapesTest {
         shapes.drawCircle(Point(canvas.width.toInt() / 2, canvas.height.toInt() / 2), 7)
         shapes.color = ColorFactory.red(255u)
         shapes.drawCircle(Point(0, 0), 10)
+//        CanvasSaver.saveToPPM(canvas, testFile)
 
         val testCanvas = ppmToCanvas(testFile)
         assertIterableEquals(canvas.getRawPixels(), testCanvas.getRawPixels())
@@ -31,6 +32,7 @@ class ShapesTest {
         shapes.drawLine(Point(10, 10), Point(13, 10))
         shapes.color = ColorFactory.green(255u)
         shapes.drawLine(Point(0, 0), Point(13, 20))
+//        CanvasSaver.saveToPPM(canvas, testFile)
 
         val testCanvas = ppmToCanvas(testFile)
         assertIterableEquals(canvas.getRawPixels(), testCanvas.getRawPixels())
@@ -51,6 +53,7 @@ class ShapesTest {
 
         shapes.color = ColorFactory.red(100u)
         shapes.drawTriangle(Point(15, 15), Point(19, 15), Point(19, 0))
+//        CanvasSaver.saveToPPM(canvas, testFile)
 
         val testCanvas = ppmToCanvas(testFile)
         assertIterableEquals(canvas.getRawPixels(), testCanvas.getRawPixels())
@@ -66,6 +69,7 @@ class ShapesTest {
         shapes.drawCircle(Point(9, 9), 5)
         shapes.color = ColorFactory.darkGreen.builder().alpha(50u).build()
         shapes.drawRec(Point(0, 0), Point(9, 19))
+//        CanvasSaver.saveToPPM(canvas, testFile)
 
         val testCanvas = ppmToCanvas(testFile)
         assertIterableEquals(canvas.getRawPixels(), testCanvas.getRawPixels())

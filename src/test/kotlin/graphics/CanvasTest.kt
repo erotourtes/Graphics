@@ -22,7 +22,7 @@ class CanvasTest {
         shapes.drawCircle(Point(8, 10), 1)
 
         val view = canvas.CanvasView(Point(5, 5), Point(9, 11))
-//        view.saveToPPM(testFile)
+//        CanvasSaver.saveToPPM(view, testFile)
 
         val testCanvas = ppmToCanvas(testFile)
         assertIterableEquals(view.getRawPixels(), testCanvas.getRawPixels())

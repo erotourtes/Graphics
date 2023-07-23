@@ -3,17 +3,15 @@ import java.awt.Point
 
 
 fun main() {
-    val canvas = Canvas(20u, 20u)
-    canvas.fill(Color())
+
+    val canvas = Canvas(200u, 200u)
+    canvas.fill(ColorFactory.yellow)
     val shapes = Shapes(canvas)
-    for (i in 0..10) {
-        shapes.drawLine(Point(2 * i, 0), Point(2 * i, 20))
-        shapes.drawLine(Point(0, 2 * i), Point(20, 2 * i))
-    }
 
     shapes.color = ColorFactory.green(30u)
-    shapes.drawTriangle(Point(0, 0), Point(0, 19), Point(19, 0))
+//    shapes.drawTriangle(Point(0, 0), Point(0, 19), Point(19, 0))
+    shapes.drawCircle(Point(100, 100), 1)
 
     CanvasSaver.saveTo(canvas, "test", "png")
-    CanvasSaver.saveToPPM(canvas, "test")
+//    CanvasSaver.saveToPPM(canvas, "test")
 }

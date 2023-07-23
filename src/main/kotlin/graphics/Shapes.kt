@@ -1,6 +1,7 @@
 package graphics
 
 import java.awt.Point
+import kotlin.math.pow
 
 class Shapes(private val canvas: Canvas) {
     var color = Color(0xFF0000FFu)
@@ -8,14 +9,42 @@ class Shapes(private val canvas: Canvas) {
     fun drawCircle(center: Point, radius: Int) {
         val cy = center.y
         val cx = center.x
-        for (y in cy - radius..cy + radius) {
-            for (x in cx - radius..cx + radius) {
+        for (y in cy - radius - 1..cy + radius) {
+            for (x in cx - radius - 1..cx + radius) {
                 val dx = x - cx
                 val dy = y - cy
-                if (dx * dx + dy * dy <= radius * radius)
+
+                val innerCircleRadius = (radius - 2).coerceAtLeast(0)
+                if (dx * dx + dy * dy <= innerCircleRadius*innerCircleRadius) { // inner should be filled
                     canvas.writeAt(x, y, color)
+                } else if (dx * dx + dy * dy <= (radius + 2) * (radius + 2)) { // on the edge should be calculated
+                    val antialiasFraction =
+                        antialias(dx, dy, 2) { xf, yf ->
+                            xf * xf + yf * yf <= (radius.toDouble() + 0.5).pow(2) // top of the pixel is in (0,0) of subpixel
+                        }
+
+                    val newAlpha = color.alpha.toDouble() * antialiasFraction
+                    canvas.writeAt(x, y, color.builder().alpha(newAlpha.toUInt()).build())
+                }
             }
         }
+    }
+
+    private inline fun antialias(x: Int, y: Int, precision: Int, formula: (Double, Double) -> Boolean): Double {
+        var count = 0
+        val gaps = precision - 1
+
+        for (subY in 0..<precision) {
+            for (subX in 0..<precision) {
+                val partOfPixelX = subX / gaps.toDouble()
+                val partOfPixelY = subY / gaps.toDouble()
+                val higherX = x.toFloat() + partOfPixelX
+                val higherY = y.toFloat() + partOfPixelY
+                if (formula(higherX, higherY)) count++
+            }
+        }
+
+        return count / precision.toDouble().pow(2)
     }
 
     fun drawLine(start: Point, end: Point) {
