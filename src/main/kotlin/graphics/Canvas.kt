@@ -4,7 +4,6 @@ import java.awt.Point
 
 class Canvas(val width: UInt, val height: UInt) {
     private val scene: Array<Color> = Array((width * height).toInt()) { Color(0xFF000000u) }
-    private val saver = CanvasSaver()
 
     var isMixingColors = true
 
@@ -33,10 +32,7 @@ class Canvas(val width: UInt, val height: UInt) {
         return scene[position]
     }
 
-
-    fun saveToPPM(path: String = "src/main/resources/test.ppm") {
-        saver.saveToPPM(scene, width.toInt(), height.toInt(), path)
-    }
+    fun getDimensions(): Pair<Int, Int> = Pair(width.toInt(), height.toInt())
 
     inner class CanvasView(from: Point, to: Point) {
         val from: Point
@@ -66,10 +62,6 @@ class Canvas(val width: UInt, val height: UInt) {
             }
 
         fun getRawPixels() = sceneView.toList()
-
-        fun saveToPPM(path: String = "src/main/resources/test-view.ppm") {
-            saver.saveToPPM(sceneView, width, height, path)
-        }
     }
 }
 

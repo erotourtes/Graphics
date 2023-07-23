@@ -1,10 +1,16 @@
 package graphics
 
+import java.awt.image.BufferedImage
 import java.io.File
+import java.util.*
+import javax.imageio.ImageIO
 
-class CanvasSaver() {
-    fun saveToPPM(scene: Array<Color>, width: Int, height: Int, path: String = "src/main/resources/test.ppm") {
-        val file = File(path)
+object CanvasSaver {
+    fun saveToPPM(canvas: Canvas, name: String, path: String = "src/main/resources/") {
+        val (width, height) = canvas.getDimensions()
+        val scene = canvas.getRawPixels()
+
+        val file = File("$path$name.ppm")
 
         file.bufferedWriter().use {
             it.write("P3\n${width} ${height}\n255\n")
@@ -15,16 +21,16 @@ class CanvasSaver() {
         }
     }
 
-//    fun saveToPNG(path: String = "src/main/resources/test.png") {
-//        val width = canvas.width.toInt()
-//        val height = canvas.height.toInt()
-//
-//        val img = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-//        val data = canvas.getRawPixels().map { color -> color.getValues().map { it.toByte() } }.flatten()
-//        img.raster.setDataElements(0, 0, width, height, data.toByteArray())
-//        val file = File(path)
-//        ImageIO.write(img, "PNG", file)
-//
-//        TODO("fix it!")
-//    }
+    fun saveTo(canvas: Canvas, name: String, formatName: String, path: String = "src/main/resources/") {
+        val (width, height) = canvas.getDimensions()
+        val scene = canvas.getRawPixels()
+
+        val img = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+        val data = scene.map { color -> color.toNumber().toInt() }
+
+        img.setRGB(0, 0, width, height, data.toIntArray(), 0, height)
+
+        val file = File("$path$name.${formatName.lowercase(Locale.getDefault())}")
+        ImageIO.write(img, formatName.uppercase(Locale.getDefault()), file)
+    }
 }

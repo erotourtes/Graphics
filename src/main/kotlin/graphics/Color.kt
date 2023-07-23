@@ -37,10 +37,12 @@ class Color(color: UInt = 0xFF000000u) {
 
     fun getValues() = listOf(alpha, red, green, blue)
 
+    fun toNumber() = buildNumber(getValues())
+
     companion object {
         fun builder() = Builder()
 
-        private fun buildNumber(channels: List<UInt>): UInt {
+         fun buildNumber(channels: List<UInt>): UInt {
             var color = 0x00000000u
             for (i in 0..<3)
                 color = color or channels[i] shl 8

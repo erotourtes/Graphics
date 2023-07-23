@@ -1,7 +1,4 @@
-import graphics.Canvas
-import graphics.Color
-import graphics.ColorFactory
-import graphics.Shapes
+import graphics.*
 import java.awt.Point
 
 
@@ -17,7 +14,6 @@ fun main() {
     shapes.color = ColorFactory.green(30u)
     shapes.drawTriangle(Point(0, 0), Point(0, 19), Point(19, 0))
 
-    val view = canvas.CanvasView(Point(5, 10), Point(19, 19))
-    view.saveToPPM()
-    canvas.saveToPPM()
+    CanvasSaver.saveTo(canvas, "test", "png")
+    CanvasSaver.saveToPPM(canvas, "test")
 }
