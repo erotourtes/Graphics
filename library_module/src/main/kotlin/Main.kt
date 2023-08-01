@@ -1,5 +1,4 @@
 import graphics.*
-import java.awt.Point
 
 
 fun main() {

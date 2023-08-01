@@ -1,6 +1,5 @@
 package graphics
 
-import java.awt.Point
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
@@ -41,5 +40,6 @@ fun ppmToCanvas(filePath: String): Canvas {
         return canvas
     }
 }
-
 fun methodName() = Thread.currentThread().stackTrace[2].methodName
+
+data class Point(val x: Int, val y: Int)

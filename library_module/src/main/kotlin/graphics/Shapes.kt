@@ -1,6 +1,5 @@
 package graphics
 
-import java.awt.Point
 import kotlin.math.pow
 
 class Shapes(private val canvas: Canvas) {
