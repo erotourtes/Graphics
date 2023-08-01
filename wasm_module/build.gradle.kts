@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    kotlin("multiplatform") version "1.8.20"
+    kotlin("multiplatform") version "1.9.0"
 }
 
 group = "me.sirmax"
@@ -36,7 +36,7 @@ kotlin {
         }
     }
     sourceSets {
-//        val commonMain by getting
+        val commonMain by getting
 //        val commonTest by getting {
 //            dependencies {
 //                implementation(kotlin("test"))

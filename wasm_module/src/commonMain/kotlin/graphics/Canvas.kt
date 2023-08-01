@@ -1,9 +1,5 @@
 package graphics
 
-import java.awt.Point
-import kotlin.js.ExperimentalJsExport
-
-@ExperimentalJsExport
 class Canvas(val width: UInt, val height: UInt) {
     private val scene: Array<Color> = Array((width * height).toInt()) { Color(0xFF000000u) }
 

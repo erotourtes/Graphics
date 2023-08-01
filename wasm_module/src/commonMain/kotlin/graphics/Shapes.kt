@@ -1,9 +1,7 @@
 package graphics
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.math.pow
 
-@ExperimentalJsExport
 class Shapes(private val canvas: Canvas) {
     var color = Color(0xFF0000FFu)
 
