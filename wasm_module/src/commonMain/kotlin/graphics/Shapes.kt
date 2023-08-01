@@ -2,7 +2,7 @@ package graphics
 
 import kotlin.math.pow
 
-class Shapes(private val canvas: Canvas) {
+class Shapes(val canvas: Canvas) {
     var color = Color(0xFF0000FFu)
 
     fun drawCircle(center: Point, radius: Int) {
@@ -33,8 +33,8 @@ class Shapes(private val canvas: Canvas) {
         var count = 0
         val gaps = precision - 1
 
-        for (subY in 0..<precision) {
-            for (subX in 0..<precision) {
+        for (subY in 0 until precision) {
+            for (subX in 0 until precision) {
                 val partOfPixelX = subX / gaps.toDouble()
                 val partOfPixelY = subY / gaps.toDouble()
                 val higherX = x.toFloat() + partOfPixelX

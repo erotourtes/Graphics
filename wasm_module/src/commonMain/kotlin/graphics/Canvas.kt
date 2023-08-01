@@ -6,7 +6,7 @@ class Canvas(val width: UInt, val height: UInt) {
     var isMixingColors = true
 
     fun fill(color: Color) {
-        for (i in 0..<(width * height).toInt()) scene[i] = color
+        for (i in 0 until (width * height).toInt()) scene[i] = color
     }
 
     fun getRawPixels(): List<Color> = scene.toList()

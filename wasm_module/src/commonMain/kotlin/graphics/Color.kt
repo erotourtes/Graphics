@@ -45,7 +45,7 @@ class Color(color: UInt = 0xFF000000u) {
 
          fun buildNumber(channels: List<UInt>): UInt {
             var color = 0x00000000u
-            for (i in 0..<3)
+            for (i in 0 until 3)
                 color = color or channels[i] shl 8
             return color or channels[3]
         }
