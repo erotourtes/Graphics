@@ -36,7 +36,7 @@ class TermPrinter {
         val greyIntensity =
             (color.red.toFloat() * redPerceivedBr +
                     color.green.toFloat() * greenPerceivedBr +
-                    color.blue.toFloat() * bluePerceivedBr) // * (color.alpha.toDouble() / 255.0)
+                    color.blue.toFloat() * bluePerceivedBr) * (color.alpha.toDouble() / 255.0)
 
         val index = (greyIntensity * (chars.length - 1) / 255)
         val char = chars[index.toInt()];

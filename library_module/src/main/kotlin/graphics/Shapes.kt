@@ -5,25 +5,31 @@ import kotlin.math.pow
 class Shapes(private val canvas: Canvas) {
     var color = Color(0xFF0000FFu)
 
-    fun drawCircle(center: Point, radius: Int) {
+    fun drawCircle(center: Point, radius: Int, antialias: Boolean = true) {
         val cy = center.y
         val cx = center.x
-        for (y in cy - radius - 1..cy + radius) {
-            for (x in cx - radius - 1..cx + radius) {
+        for (y in cy - radius..cy + radius) {
+            for (x in cx - radius..cx + radius) {
                 val dx = x - cx
                 val dy = y - cy
 
-                val innerCircleRadius = (radius - 2).coerceAtLeast(0)
-                if (dx * dx + dy * dy <= innerCircleRadius*innerCircleRadius) { // inner should be filled
+                val innerCircleRadius =
+                    if (antialias) (radius - 1).coerceAtLeast(0) else radius
+                if (dx * dx + dy * dy <= innerCircleRadius * innerCircleRadius) { // inner should be filled
                     canvas.writeAt(x, y, color)
-                } else if (dx * dx + dy * dy <= (radius + 2) * (radius + 2)) { // on the edge should be calculated
+                } else if (antialias && dx * dx + dy * dy <= (radius * radius)) { // on the edge should be calculated
                     val antialiasFraction =
                         antialias(dx, dy, 2) { xf, yf ->
-                            xf * xf + yf * yf <= (radius.toDouble() + 0.5).pow(2) // top of the pixel is in (0,0) of subpixel
+                            xf * xf + yf * yf <= (radius.toDouble()).pow(2) // top of the pixel is in (0,0) of subpixel
                         }
 
                     val newAlpha = color.alpha.toDouble() * antialiasFraction
+
+                    // For antialiasing mixing colors should be enabled
+                    val isMixing = canvas.isMixingColors
+                    canvas.isMixingColors = true
                     canvas.writeAt(x, y, color.builder().alpha(newAlpha.toUInt()).build())
+                    canvas.isMixingColors = isMixing
                 }
             }
         }
@@ -31,12 +37,12 @@ class Shapes(private val canvas: Canvas) {
 
     private inline fun antialias(x: Int, y: Int, precision: Int, formula: (Double, Double) -> Boolean): Double {
         var count = 0
-        val gaps = precision - 1
+        val gapsLen = 1.0 / precision
 
         for (subY in 0..<precision) {
             for (subX in 0..<precision) {
-                val partOfPixelX = subX / gaps.toDouble()
-                val partOfPixelY = subY / gaps.toDouble()
+                val partOfPixelX = subX * gapsLen - 0.25 // somehow it calculates whether it is in formula by bottom right corner
+                val partOfPixelY = subY * gapsLen - 0.25
                 val higherX = x.toFloat() + partOfPixelX
                 val higherY = y.toFloat() + partOfPixelY
                 if (formula(higherX, higherY)) count++

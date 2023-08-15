@@ -1,6 +1,11 @@
 package graphics
 
-class Canvas(val width: UInt, val height: UInt) {
+interface Savable {
+    fun getRawPixels(): List<Color>
+    fun getDimensions(): Pair<Int, Int>
+}
+
+class Canvas(val width: UInt, val height: UInt): Savable {
     private val scene: Array<Color> = Array((width * height).toInt()) { Color(0xFF000000u) }
 
     var isMixingColors = true
@@ -12,7 +17,7 @@ class Canvas(val width: UInt, val height: UInt) {
         fill(Color(0xFF000000u))
     }
 
-    fun getRawPixels(): List<Color> = scene.toList()
+    override fun getRawPixels(): List<Color> = scene.toList()
 
     fun writeAt(x: Int, y: Int, color: Color) {
         if (!(0 <= x && x < width.toInt()) || !(0 <= y && y < height.toInt())) return
@@ -33,7 +38,7 @@ class Canvas(val width: UInt, val height: UInt) {
         return scene[position]
     }
 
-    fun getDimensions(): Pair<Int, Int> = Pair(width.toInt(), height.toInt())
+    override fun getDimensions(): Pair<Int, Int> = Pair(width.toInt(), height.toInt())
 
     inline fun iterate(callback: (Point) -> Unit) {
         for (y in 0..<height.toInt()) {
@@ -56,7 +61,7 @@ class Canvas(val width: UInt, val height: UInt) {
         return newCanvas
     }
 
-    inner class CanvasView(from: Point, to: Point) {
+    inner class CanvasView(from: Point, to: Point): Savable {
         val from: Point
         val to: Point
 
@@ -83,6 +88,8 @@ class Canvas(val width: UInt, val height: UInt) {
                 return field
             }
 
-        fun getRawPixels() = sceneView.toList()
+        override fun getRawPixels() = sceneView.toList()
+
+        override fun getDimensions(): Pair<Int, Int> = Pair(width, height)
     }
 }
