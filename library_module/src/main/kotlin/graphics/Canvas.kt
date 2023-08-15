@@ -1,7 +1,5 @@
 package graphics
 
-import java.awt.Point
-
 class Canvas(val width: UInt, val height: UInt) {
     private val scene: Array<Color> = Array((width * height).toInt()) { Color(0xFF000000u) }
 
@@ -9,6 +7,9 @@ class Canvas(val width: UInt, val height: UInt) {
 
     fun fill(color: Color) {
         for (i in 0..<(width * height).toInt()) scene[i] = color
+    }
+    fun clear() {
+        fill(Color(0xFF000000u))
     }
 
     fun getRawPixels(): List<Color> = scene.toList()
@@ -33,6 +34,27 @@ class Canvas(val width: UInt, val height: UInt) {
     }
 
     fun getDimensions(): Pair<Int, Int> = Pair(width.toInt(), height.toInt())
+
+    inline fun iterate(callback: (Point) -> Unit) {
+        for (y in 0..<height.toInt()) {
+            for (x in 0..<width.toInt()) {
+                callback(Point(x, y))
+            }
+        }
+    }
+
+    fun toDimensions(x: Int, y: Int): Canvas {
+        val newCanvas = Canvas(x.toUInt(), y.toUInt())
+
+        iterate {
+            val x = it.x * x / width.toInt()
+            val y = it.y * y / width.toInt()
+
+            newCanvas.writeAt(x, y, getAt(it))
+        }
+
+        return newCanvas
+    }
 
     inner class CanvasView(from: Point, to: Point) {
         val from: Point
@@ -63,12 +85,4 @@ class Canvas(val width: UInt, val height: UInt) {
 
         fun getRawPixels() = sceneView.toList()
     }
-}
-
-private operator fun Point.component1(): Int {
-    return this.x
-}
-
-private operator fun Point.component2(): Int {
-    return this.y
 }

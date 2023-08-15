@@ -16,7 +16,7 @@ fun linePrams(start: Point, end: Point): Pair<Float, Float> {
 
 fun ppmToCanvas(filePath: String): Canvas {
     val file = File(filePath)
-    if(!file.isFile) throw NoSuchFileException(file)
+    if (!file.isFile) throw NoSuchFileException(file)
 
     val canvas: Canvas
 
@@ -40,6 +40,16 @@ fun ppmToCanvas(filePath: String): Canvas {
         return canvas
     }
 }
+
 fun methodName() = Thread.currentThread().stackTrace[2].methodName
 
 data class Point(val x: Int, val y: Int)
+
+
+data class Vector(val direction: Point, val magnitude: Int = 1) {
+    fun move(point: Point): Point {
+        val x = point.x + direction.x * magnitude
+        val y = point.y + direction.y * magnitude
+        return Point(x, y)
+    }
+}

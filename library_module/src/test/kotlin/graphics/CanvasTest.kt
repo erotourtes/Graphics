@@ -3,7 +3,6 @@ package graphics
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
-import java.awt.Point
 
 class CanvasTest {
     private val canvas = Canvas(20u, 20u)
