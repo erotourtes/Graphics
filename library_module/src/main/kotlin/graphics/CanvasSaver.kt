@@ -14,7 +14,7 @@ object CanvasSaver {
         saveToPPM(canvas.getRawPixels(), width, height, fullPath.substring(last + 1), fullPath.substring(0, last + 1))
     }
 
-    fun saveToPPM(scene: List<Color>, width: Int, height: Int, name: String, path: String = "library_module/src/main/resources/") {
+    fun saveToPPM(scene: List<Color>, width: Int, height: Int, name: String, path: String = "src/main/resources/") {
         val file = File("$path${if (name.endsWith(".ppm")) name else "$name.ppm"}")
 
         file.bufferedWriter().use {
@@ -26,7 +26,7 @@ object CanvasSaver {
         }
     }
 
-    fun saveTo(canvas: Canvas, name: String, formatName: String, path: String = "library_module/src/main/resources/") {
+    fun saveTo(canvas: Canvas, name: String, formatName: String, path: String = "src/main/resources/") {
         val (width, height) = canvas.getDimensions()
         val scene = canvas.getRawPixels()
 

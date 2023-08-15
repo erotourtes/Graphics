@@ -41,6 +41,19 @@ fun animate() {
     }
 }
 
+fun testAntialiasing() {
+    val canvas = Canvas(100u, 30u)
+    canvas.fill(ColorFactory.darkGreen)
+    val shapes = Shapes(canvas)
+
+    val circleRadius = 3
+    val circlePoint = Point(50, 10)
+    shapes.color = ColorFactory.yellow
+    shapes.drawCircle(circlePoint, circleRadius)
+    CanvasSaver.saveTo(canvas, "test-again", "png")
+}
+
 fun main() {
-    animate()
+//    animate()
+    testAntialiasing()
 }

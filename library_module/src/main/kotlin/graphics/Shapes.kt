@@ -41,7 +41,8 @@ class Shapes(private val canvas: Canvas) {
 
         for (subY in 0..<precision) {
             for (subX in 0..<precision) {
-                val partOfPixelX = subX * gapsLen - 0.25 // somehow it calculates whether it is in formula by bottom right corner
+                // TODO: wat, why -0.25?
+                val partOfPixelX = subX * gapsLen - 0.25
                 val partOfPixelY = subY * gapsLen - 0.25
                 val higherX = x.toFloat() + partOfPixelX
                 val higherY = y.toFloat() + partOfPixelY
