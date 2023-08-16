@@ -25,11 +25,16 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
     private val scene: Array<Color>
 
     init {
-        val parentOffset = parentCanvas?.from ?: Point(0, 0)
-        val (from, to) = sortPoints(from, to)
+        val (topLeft, bottomRight) = sortPoints(from, to)
 
-        this.from = Point(parentOffset.x + from.x, parentOffset.y + from.y)
-        this.to = Point(parentOffset.x + to.x, parentOffset.y + to.y)
+        if (parentCanvas != null && (!parentCanvas.isInBoundaries(topLeft) || !parentCanvas.isInBoundaries(bottomRight)))
+            throw IllegalArgumentException("View is out of parent canvas boundaries $topLeft $bottomRight \n$parentCanvas")
+
+        val parentOffsetFrom = parentCanvas?.from ?: Point(0, 0)
+        val parentOffsetTo = parentCanvas?.to ?: Point(bottomRight.x - topLeft.x + 1, bottomRight.y - topLeft.y + 1)
+
+        this.from = Point(parentOffsetFrom.x + topLeft.x, parentOffsetFrom.y + topLeft.y)
+        this.to = Point(parentOffsetTo.x + bottomRight.x, parentOffsetTo.y + bottomRight.y)
     }
 
     init {
@@ -53,6 +58,8 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
         if (!isInBoundaries(local)) return
 
         val index = globalIndexFrom(local)
+
+        if (index >= scene.size) throw Error("SHOULD NEVER HAPPEN: index ($index) is out of range (${scene.size})\n$this")
 
         val curColor = scene[index]
         if (isMixingColors) scene[index] = color.mixOver(curColor)
@@ -106,6 +113,9 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
     fun fitToDimensions(width: Int, height: Int, src: Canvas) =
         fitToDimensions(Point(0, 0), Point(width - 1, height - 1), src)
 
+    fun fitToDimensions(src: Canvas) =
+        fitToDimensions(Point(0, 0), Point(width - 1, height - 1), src)
+
     private fun globalIndexFrom(local: Point): Int {
         val xPos = from.x + local.x
         val yPos = from.y + local.y
@@ -122,4 +132,19 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
 
     private fun isInBoundaries(vararg point: Point): Boolean =
         point.all { (x, y) -> (x in 0..<width) && (y in 0..<height) }
+
+    override fun toString(): String {
+        return """
+            Canvas(
+                width=$width, 
+                height=$height, 
+                isMixingColors=$isMixingColors, 
+                isView=$isView, 
+                stride=$stride, 
+                from=$from, 
+                to=$to, 
+                stride=$stride
+            )
+        """
+    }
 }

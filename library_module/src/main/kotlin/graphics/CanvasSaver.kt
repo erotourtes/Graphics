@@ -26,7 +26,7 @@ object CanvasSaver {
         }
     }
 
-    fun saveTo(canvas: Canvas, name: String, formatName: String, path: String = "src/main/resources/") {
+    fun saveTo(canvas: Canvas, name: String, formatName: String = "png", path: String = "src/main/resources/") {
         val (width, height) = canvas.getDimensions()
         val scene = canvas.getRawPixels()
 
