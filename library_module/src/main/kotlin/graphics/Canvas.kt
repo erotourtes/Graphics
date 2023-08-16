@@ -69,7 +69,16 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
 
     fun clear() = fill(Color(0xFF000000u))
 
-    override fun getRawPixels(): List<Color> = scene.toList()
+    override fun getRawPixels(): List<Color> {
+        if (isView) {
+            val viewScene = MutableList(0) { ColorFactory.blank }
+            iterate { viewScene.add(getAt(it)) }
+            return viewScene
+        }
+
+        return scene.toList()
+    }
+
     override fun getDimensions(): Pair<Int, Int> = Pair(width, height)
 
     inline fun iterate(callback: (Point) -> Unit) {

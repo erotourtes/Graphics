@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class ShapesTest {
-    private val canvas = Canvas(20u, 20u)
+    private val canvas = CanvasFactory.createCanvas(20, 20)
     private val shapes = Shapes(canvas)
 
     @Test
@@ -12,7 +12,7 @@ class ShapesTest {
         val testFile = "src/test/resources/test-${methodName()}.ppm"
 
         shapes.color = ColorFactory.blue(255u)
-        shapes.drawCircle(Point(canvas.width.toInt() / 2, canvas.height.toInt() / 2), 7)
+        shapes.drawCircle(Point(canvas.width / 2, canvas.height / 2), 7)
         shapes.color = ColorFactory.red(255u)
         shapes.drawCircle(Point(0, 0), 10)
 //        CanvasSaver.saveToPPM(canvas, testFile)
