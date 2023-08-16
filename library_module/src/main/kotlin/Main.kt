@@ -41,37 +41,14 @@ fun animate() {
     }
 }
 
-fun testAntialiasing() {
-    val canvas = CanvasFactory.createCanvas(100, 30)
-    canvas.fill(ColorFactory.darkGreen)
-    val shapes = Shapes(canvas)
-
-    val circleRadius = 3
-    val circlePoint = Point(50, 10)
-    shapes.color = ColorFactory.yellow
-    shapes.drawCircle(circlePoint, circleRadius)
-    CanvasSaver.saveTo(canvas, "test-again", "png")
-}
-
 fun main() {
 //    animate()
 //    testAntialiasing()
 
-    val c = CanvasFactory.createCanvas(30, 20)
-    val s = Shapes(c)
+    val c = CanvasFactory.createCanvas(300, 200)
 
-    s.color = ColorFactory.yellow
-    s.drawCircle(Point(10, 10), 5)
+    val emoji = CanvasSaver.readCanvasFrom("emojy")
 
-    s.color = ColorFactory.lightGreen
-    s.drawCircle(Point(20, 10), 5)
-
-    s.color = ColorFactory.purple
-    s.drawRec(Point(10, 10), Point(1, 1))
-
-//    val view = c.CanvasView(Point(1, 1), Point(9, 9))
-////    view.fill(ColorFactory.red())
-//    view.writeAt(Point(0, 0), ColorFactory.red())
-
+    c.fitToDimensions(Point(0, 0), Point(50, 50), emoji)
     CanvasSaver.saveTo(c, "test", "png")
 }

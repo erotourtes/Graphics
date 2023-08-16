@@ -38,4 +38,18 @@ object CanvasSaver {
         val file = File("$path$name.${formatName.lowercase(Locale.getDefault())}")
         ImageIO.write(img, formatName.uppercase(Locale.getDefault()), file)
     }
+
+    fun readCanvasFrom(name: String, formatName: String = "png", path: String = "src/main/resources/"): Canvas {
+        val file = File("$path$name.$formatName")
+        val image = ImageIO.read(file)
+        val rawPixels = image.getRGB(0, 0, image.width, image.height, null, 0, image.width)
+
+        val canvas = CanvasFactory.createCanvas(image.width, image.height)
+        for (i in rawPixels.indices) {
+            val color = Color(rawPixels[i].toUInt())
+            canvas.writeAt(canvas.pointFromGlobalIndex(i), color)
+        }
+
+        return canvas
+    }
 }

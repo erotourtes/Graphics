@@ -87,6 +87,16 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
                 callback(Point(x, y))
     }
 
+    fun fitToDimensions(from: Point, to: Point, src: Canvas) {
+        val dstView = CanvasFactory.createView(from, to, this)
+        dstView.iterate {
+            val x = it.x * src.width / dstView.width
+            val y = it.y * src.height / dstView.height
+
+            dstView.writeAt(it, src.getAt(Point(x, y)))
+        }
+    }
+
     private fun globalIndexFrom(local: Point): Int {
         val xPos = from.x + local.x
         val yPos = from.y + local.y
@@ -94,22 +104,13 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
         return (yPos * stride + xPos)
     }
 
+    fun pointFromGlobalIndex(index: Int): Point {
+        val xPos = index % stride
+        val yPos = index / stride
+
+        return Point(xPos, yPos)
+    }
+
     private fun isInBoundaries(vararg point: Point): Boolean =
         point.all { (x, y) -> (x in 0..<width) && (y in 0..<height) }
 }
-
-
-//class Canvas(val width: Int, val height: Int) {
-//    fun toDimensions(x: Int, y: Int): Canvas {
-//        val newCanvas = Canvas(x, y)
-//
-//        iterate {
-//            val x = it.x * x / width
-//            val y = it.y * y / height
-//
-//            newCanvas.writeAt(x, y, getAt(it))
-//        }
-//
-//        return newCanvas
-//    }
-//}
