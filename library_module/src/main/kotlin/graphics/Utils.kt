@@ -43,6 +43,13 @@ fun ppmToCanvas(filePath: String): Canvas {
 
 fun methodName() = Thread.currentThread().stackTrace[2].methodName
 
+fun sortPoints(first: Point, second: Point): Pair<Point, Point> {
+    val from = Point(first.x.coerceAtMost(second.x), first.y.coerceAtMost(second.y))
+    val to = Point(first.x.coerceAtLeast(second.x), first.y.coerceAtLeast(second.y))
+
+    return Pair(from, to)
+}
+
 data class Point(val x: Int, val y: Int)
 
 

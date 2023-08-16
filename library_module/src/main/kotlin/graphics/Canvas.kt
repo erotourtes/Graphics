@@ -25,11 +25,11 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
     private val scene: Array<Color>
 
     init {
-        val (x1, y1) = from
-        val (x2, y2) = to
+        val parentOffset = parentCanvas?.from ?: Point(0, 0)
+        val (from, to) = sortPoints(from, to)
 
-        this.from = Point(x1.coerceAtMost(x2), y1.coerceAtMost(y2))
-        this.to = Point(x1.coerceAtLeast(x2), y1.coerceAtLeast(y2))
+        this.from = Point(parentOffset.x + from.x, parentOffset.y + from.y)
+        this.to = Point(parentOffset.x + to.x, parentOffset.y + to.y)
     }
 
     init {
@@ -39,7 +39,7 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
 
     init {
         scene = parentCanvas?.scene ?: Array(width * height) { Color(0xFF000000u) }
-        stride = parentCanvas?.width ?: width
+        stride = parentCanvas?.stride ?: width
     }
 
     fun getAt(local: Point): Color {
@@ -102,6 +102,9 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
             dstView.writeAt(it, src.getAt(Point(x, y)))
         }
     }
+
+    fun fitToDimensions(width: Int, height: Int, src: Canvas) =
+        fitToDimensions(Point(0, 0), Point(width - 1, height - 1), src)
 
     private fun globalIndexFrom(local: Point): Int {
         val xPos = from.x + local.x
