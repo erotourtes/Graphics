@@ -14,15 +14,14 @@ class TermPrinter {
     }
 
     fun print(canvas: Canvas) {
-        var curWidth = 1
+        var lastX = 0
         canvas.iterate {
             colorToChar(canvas.getAt(it)).let(::print)
 
-            if (canvas.width.toInt() == curWidth) {
+            if (lastX != it.x) {
                 println()
-                curWidth = 0
+                lastX = it.x
             }
-            curWidth++
         }
     }
 

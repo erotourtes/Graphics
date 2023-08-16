@@ -5,91 +5,102 @@ interface Savable {
     fun getDimensions(): Pair<Int, Int>
 }
 
-class Canvas(val width: UInt, val height: UInt): Savable {
-    private val scene: Array<Color> = Array((width * height).toInt()) { Color(0xFF000000u) }
+object CanvasFactory {
+    fun createView(from: Point, to: Point, parentCanvas: Canvas) = Canvas(from, to, parentCanvas)
+    fun createView(start: Point, width: Int, height: Int, parentCanvas: Canvas) =
+        createView(start, Point(start.x + width - 1, start.y + height - 1), parentCanvas)
 
+    fun createCanvas(width: Int, height: Int) =
+        Canvas(Point(0, 0), Point(width - 1, height - 1), null)
+}
+
+class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
+    val width: Int
+    val height: Int
     var isMixingColors = true
+    val isView: Boolean = parentCanvas != null
+    private val stride: Int
+    private val from: Point
+    private val to: Point
+    private val scene: Array<Color>
 
-    fun fill(color: Color) {
-        for (i in 0..<(width * height).toInt()) scene[i] = color
+    init {
+        val (x1, y1) = from
+        val (x2, y2) = to
+
+        this.from = Point(x1.coerceAtMost(x2), y1.coerceAtMost(y2))
+        this.to = Point(x1.coerceAtLeast(x2), y1.coerceAtLeast(y2))
     }
-    fun clear() {
-        fill(Color(0xFF000000u))
+
+    init {
+        width = to.x - from.x + 1
+        height = to.y - from.y + 1
     }
+
+    init {
+        scene = parentCanvas?.scene ?: Array(width * height) { Color(0xFF000000u) }
+        stride = parentCanvas?.width ?: width
+    }
+
+    fun getAt(local: Point): Color {
+        if (!isInBoundaries(local)) throw IllegalArgumentException()
+
+        val index = globalIndexFrom(local)
+        return scene[index]
+    }
+
+    fun writeAt(local: Point, color: Color) {
+        if (!isInBoundaries(local)) return
+
+        val index = globalIndexFrom(local)
+
+        val curColor = scene[index]
+        if (isMixingColors) scene[index] = color.mixOver(curColor)
+        else scene[index] = color
+    }
+
+    fun setRawPixels(colors: List<Color>) {
+        if (colors.size != width * height) throw IllegalArgumentException()
+
+        iterate { writeAt(it, colors[globalIndexFrom(it)]) }
+    }
+
+    fun fill(color: Color) = iterate { writeAt(it, color) }
+
+    fun clear() = fill(Color(0xFF000000u))
 
     override fun getRawPixels(): List<Color> = scene.toList()
-
-    fun writeAt(x: Int, y: Int, color: Color) {
-        if (!(0 <= x && x < width.toInt()) || !(0 <= y && y < height.toInt())) return
-
-        val position = (y * width.toInt() + x)
-        val curColor = scene[position]
-        if (isMixingColors) scene[position] = color.mixOver(curColor)
-        else scene[position] = color
-    }
-
-    fun isInBoundaries(vararg point: Point): Boolean =
-        point.all { (x, y) -> 0 <= x && x < width.toInt() && 0 <= y && y < height.toInt() }
-
-    fun getAt(point: Point): Color {
-        if (!isInBoundaries(point)) throw IllegalArgumentException()
-
-        val position = (point.y * width.toInt() + point.x)
-        return scene[position]
-    }
-
-    override fun getDimensions(): Pair<Int, Int> = Pair(width.toInt(), height.toInt())
+    override fun getDimensions(): Pair<Int, Int> = Pair(width, height)
 
     inline fun iterate(callback: (Point) -> Unit) {
-        for (y in 0..<height.toInt()) {
-            for (x in 0..<width.toInt()) {
+        for (y in 0..<height)
+            for (x in 0..<width)
                 callback(Point(x, y))
-            }
-        }
     }
 
-    fun toDimensions(x: Int, y: Int): Canvas {
-        val newCanvas = Canvas(x.toUInt(), y.toUInt())
+    private fun globalIndexFrom(local: Point): Int {
+        val xPos = from.x + local.x
+        val yPos = from.y + local.y
 
-        iterate {
-            val x = it.x * x / width.toInt()
-            val y = it.y * y / width.toInt()
-
-            newCanvas.writeAt(x, y, getAt(it))
-        }
-
-        return newCanvas
+        return (yPos * stride + xPos)
     }
 
-    inner class CanvasView(from: Point, to: Point): Savable {
-        val from: Point
-        val to: Point
-
-        init {
-            val (x1, y1) = from
-            val (x2, y2) = to
-
-            this.from = Point(x1.coerceAtMost(x2), y1.coerceAtMost(y2))
-            this.to = Point(x1.coerceAtLeast(x2), y1.coerceAtLeast(y2))
-        }
-
-        val width get() = to.x - from.x + 1
-        val height get() = to.y - from.y + 1
-
-        private val sceneView = Array(width * height) { Color() }
-            get() {
-                for (y in from.y..to.y) {
-                    for (x in from.x..to.x) {
-                        val position = (y - from.y) * width + (x - from.x)
-                        field[position] = getAt(Point(x, y))
-                    }
-                }
-
-                return field
-            }
-
-        override fun getRawPixels() = sceneView.toList()
-
-        override fun getDimensions(): Pair<Int, Int> = Pair(width, height)
-    }
+    private fun isInBoundaries(vararg point: Point): Boolean =
+        point.all { (x, y) -> (x in 0..<width) && (y in 0..<height) }
 }
+
+
+//class Canvas(val width: Int, val height: Int) {
+//    fun toDimensions(x: Int, y: Int): Canvas {
+//        val newCanvas = Canvas(x, y)
+//
+//        iterate {
+//            val x = it.x * x / width
+//            val y = it.y * y / height
+//
+//            newCanvas.writeAt(x, y, getAt(it))
+//        }
+//
+//        return newCanvas
+//    }
+//}

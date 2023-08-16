@@ -16,7 +16,7 @@ class Shapes(private val canvas: Canvas) {
                 val innerCircleRadius =
                     if (antialias) (radius - 1).coerceAtLeast(0) else radius
                 if (dx * dx + dy * dy <= innerCircleRadius * innerCircleRadius) { // inner should be filled
-                    canvas.writeAt(x, y, color)
+                    canvas.writeAt(Point(x, y), color)
                 } else if (antialias && dx * dx + dy * dy <= (radius * radius)) { // on the edge should be calculated
                     val antialiasFraction =
                         antialias(dx, dy, 2) { xf, yf ->
@@ -28,7 +28,7 @@ class Shapes(private val canvas: Canvas) {
                     // For antialiasing mixing colors should be enabled
                     val isMixing = canvas.isMixingColors
                     canvas.isMixingColors = true
-                    canvas.writeAt(x, y, color.builder().alpha(newAlpha.toUInt()).build())
+                    canvas.writeAt(Point(x, y), color.builder().alpha(newAlpha.toUInt()).build())
                     canvas.isMixingColors = isMixing
                 }
             }
@@ -57,7 +57,7 @@ class Shapes(private val canvas: Canvas) {
         val isVertical = start.x == end.x
         if (isVertical) {
             for (y in start.y.range(end.y))
-                canvas.writeAt(start.x, y, color)
+                canvas.writeAt(Point(start.x, y), color)
             return
         }
 
@@ -69,7 +69,7 @@ class Shapes(private val canvas: Canvas) {
 
             var y = firstY.toInt()
             while (y <= lastY) {
-                canvas.writeAt(x, y, color)
+                canvas.writeAt(Point(x, y), color)
                 y++
             }
         }
@@ -78,7 +78,7 @@ class Shapes(private val canvas: Canvas) {
     fun drawRec(p1: Point, p2: Point) {
         for (y in p1.y.range(p2.y)) {
             for (x in p1.x.range(p2.x)) {
-                canvas.writeAt(x, y, color)
+                canvas.writeAt(Point(x, y), color)
             }
         }
     }
@@ -99,7 +99,7 @@ class Shapes(private val canvas: Canvas) {
 
             if (p0.y == p1.y && startX == endX) return
 
-            for (x in startX.range(endX)) canvas.writeAt(x, y, color)
+            for (x in startX.range(endX)) canvas.writeAt(Point(x, y), color)
         }
     }
 }

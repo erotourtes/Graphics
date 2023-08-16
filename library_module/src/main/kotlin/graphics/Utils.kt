@@ -22,8 +22,8 @@ fun ppmToCanvas(filePath: String): Canvas {
 
     BufferedReader(FileReader(file)).use { reader ->
         reader.readLine() // format
-        val (width, height) = reader.readLine().split(" ").map { it.toUInt() }
-        canvas = Canvas(width, height)
+        val (width, height) = reader.readLine().split(" ").map { it.toInt() }
+        canvas = CanvasFactory.createCanvas(width, height)
         reader.readLine() // number of colors
 
         var line: String?
@@ -31,9 +31,9 @@ fun ppmToCanvas(filePath: String): Canvas {
         while (reader.readLine().also { line = it } != null) {
             val (red, green, blue) = line!!.split(" ").map { it.toUInt() }
             val color = Color.builder().red(red).green(green).blue(blue).build()
-            val y = counter / width.toInt()
-            val x = counter - y * width.toInt()
-            canvas.writeAt(x, y, color)
+            val y = counter / width
+            val x = counter - y * width
+            canvas.writeAt(Point(x, y), color)
             counter++
         }
 

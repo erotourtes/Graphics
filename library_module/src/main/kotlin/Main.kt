@@ -5,7 +5,7 @@ import java.lang.Thread.sleep
 // To run a program use `~/.gradle/wrapper/dists/gradle-8.2.1-bin/5hap6b9n41hkg4jeh2au2pllh/gradle-8.2.1/bin/gradle ':library_module:run'`
 
 fun animate() {
-    val canvas = Canvas(100u, 30u)
+    val canvas = CanvasFactory.createCanvas(100, 30)
     canvas.fill(ColorFactory.darkGreen)
     val shapes = Shapes(canvas)
     val terminal = TermPrinter()
@@ -42,7 +42,7 @@ fun animate() {
 }
 
 fun testAntialiasing() {
-    val canvas = Canvas(100u, 30u)
+    val canvas = CanvasFactory.createCanvas(100, 30)
     canvas.fill(ColorFactory.darkGreen)
     val shapes = Shapes(canvas)
 
@@ -55,5 +55,23 @@ fun testAntialiasing() {
 
 fun main() {
 //    animate()
-    testAntialiasing()
+//    testAntialiasing()
+
+    val c = CanvasFactory.createCanvas(30, 20)
+    val s = Shapes(c)
+
+    s.color = ColorFactory.yellow
+    s.drawCircle(Point(10, 10), 5)
+
+    s.color = ColorFactory.lightGreen
+    s.drawCircle(Point(20, 10), 5)
+
+    s.color = ColorFactory.purple
+    s.drawRec(Point(10, 10), Point(1, 1))
+
+//    val view = c.CanvasView(Point(1, 1), Point(9, 9))
+////    view.fill(ColorFactory.red())
+//    view.writeAt(Point(0, 0), ColorFactory.red())
+
+    CanvasSaver.saveTo(c, "test", "png")
 }
