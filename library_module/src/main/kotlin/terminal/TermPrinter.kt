@@ -14,14 +14,10 @@ class TermPrinter {
     }
 
     fun print(canvas: Canvas) {
-        var lastX = 0
-        canvas.iterate {
+        canvas.iterateWithEndRowIndicator { it, isEndOfRow ->
             colorToChar(canvas.getAt(it)).let(::print)
 
-            if (lastX != it.x) {
-                println()
-                lastX = it.x
-            }
+            if (isEndOfRow) println()
         }
     }
 

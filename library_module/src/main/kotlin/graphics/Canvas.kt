@@ -87,6 +87,12 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
                 callback(Point(x, y))
     }
 
+    inline fun iterateWithEndRowIndicator(callback: (Point, Boolean) -> Unit) {
+        for (y in 0..<height)
+            for (x in 0..<width)
+                callback(Point(x, y), x == width - 1)
+    }
+
     fun fitToDimensions(from: Point, to: Point, src: Canvas) {
         val dstView = CanvasFactory.createView(from, to, this)
         dstView.iterate {
