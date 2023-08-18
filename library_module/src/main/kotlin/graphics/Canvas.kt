@@ -74,7 +74,7 @@ class Canvas(from: Point, to: Point, parentCanvas: Canvas?) : Savable {
 
     fun fill(color: Color) = iterate { writeAt(it, color) }
 
-    fun clear() = fill(Color(0xFF000000u))
+    fun clear() = fill(ColorFactory.blank)
 
     override fun getRawPixels(): List<Color> {
         if (isView) {

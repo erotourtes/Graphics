@@ -75,5 +75,5 @@ object ColorFactory {
     val lightGreen = Color(0xFF89CE94u)
     val darkGreen = Color(0xFF297373u)
     val purple = Color(0xFF7D5BA6u)
-    val blank = Color()
+    val blank = Color(0x00000000u)
 }

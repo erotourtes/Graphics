@@ -24,6 +24,8 @@ class TermPrinter {
 
     // TODO: it doesn't use alpha channel
     private fun colorToChar(color: Color): Char {
+        if (color.alpha == 0u) return ' '
+
         val redPerceivedBr = 0.299
         val greenPerceivedBr = 0.587
         val bluePerceivedBr = 0.114

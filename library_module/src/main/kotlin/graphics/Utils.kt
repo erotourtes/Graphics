@@ -3,6 +3,7 @@ package graphics
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
+import kotlin.math.sqrt
 
 fun Int.range(value: Int) = if (this < value) this..value else value..this
 
@@ -53,10 +54,22 @@ fun sortPoints(first: Point, second: Point): Pair<Point, Point> {
 data class Point(val x: Int, val y: Int)
 
 
+// TODO: Point Vector and Vector3D are similar
 data class Vector(val direction: Point, val magnitude: Int = 1) {
     fun move(point: Point): Point {
         val x = point.x + direction.x * magnitude
         val y = point.y + direction.y * magnitude
         return Point(x, y)
     }
+}
+
+
+data class Vector3D(
+    val x: Double,
+    val y: Double,
+    val z: Double
+) {
+    val magnitude = sqrt(x * x + y * y + z * z)
+
+    fun normalize(): Vector3D = Vector3D(x / magnitude, y / magnitude, z / magnitude)
 }

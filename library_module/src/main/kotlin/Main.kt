@@ -1,6 +1,8 @@
 import graphics.*
 import terminal.TermPrinter
 import java.lang.Thread.sleep
+import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.sin
 
 // `z Graphics && set PATH ~/Documents/.jdks/AmazonCorretto19.0.2/bin/ /bin/`
@@ -92,7 +94,48 @@ fun animateSquishing() {
     }
 }
 
+fun animate3D() {
+    val c = CanvasFactory.createCanvas(100, 30)
+    c.fill(ColorFactory.blank)
+    val shapes = Shapes(c)
+    val terminal = TermPrinter()
+    val from3DTo2D = From3DTo2D(c)
+
+    setInterval(1000 / 60 * 15) {
+        val z = 1.5
+        c.clear()
+        // rotation matrix is
+        // cos(a) -sin(a)
+        // sin(a) cos(a)
+
+        val p1 = from3DTo2D.convertTo2D(
+            Vector3D(
+                cos(it.toDouble()) * 0.5,
+                -0.3,
+                z + 0.5 * sin(it.toDouble())
+            )
+        )
+        val p2 =
+            from3DTo2D.convertTo2D(
+                Vector3D(
+                    cos(it.toDouble() + PI) * 0.5,
+                    -0.3,
+                    z + 0.5 * sin(it.toDouble() + PI)
+                )
+            )
+
+        val p3 = from3DTo2D.convertTo2D(Vector3D(0.0, 0.5, z))
+
+        shapes.color = ColorFactory.yellow
+        shapes.drawTriangle(p1, p2, p3)
+
+        terminal.printWithReset(c)
+    }
+}
+
 fun main() {
 //    animateCircle()
-    animateSquishing()
+//    animateSquishing()
+
+    animate3D()
 }
