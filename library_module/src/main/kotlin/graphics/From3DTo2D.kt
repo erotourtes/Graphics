@@ -1,8 +1,5 @@
 package graphics
 
-import kotlin.math.abs
-import kotlin.math.sqrt
-
 class From3DTo2D(private val canvas: Canvas) {
     private val screenDistance = 1
 

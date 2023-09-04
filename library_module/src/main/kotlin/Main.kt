@@ -97,45 +97,84 @@ fun animateSquishing() {
 fun animate3D() {
     val c = CanvasFactory.createCanvas(100, 30)
     c.fill(ColorFactory.blank)
-    val shapes = Shapes(c)
+    val shapes3D = Shapes3D(c)
     val terminal = TermPrinter()
-    val from3DTo2D = From3DTo2D(c)
 
     setInterval(1000 / 60 * 15) {
         val z = 1.5
         c.clear()
+        shapes3D.clearZBuffer()
         // rotation matrix is
         // cos(a) -sin(a)
         // sin(a) cos(a)
 
-        val p1 = from3DTo2D.convertTo2D(
+        val p1 =
             Vector3D(
                 cos(it.toDouble()) * 0.5,
                 -0.3,
                 z + 0.5 * sin(it.toDouble())
             )
-        )
         val p2 =
-            from3DTo2D.convertTo2D(
-                Vector3D(
-                    cos(it.toDouble() + PI) * 0.5,
-                    -0.3,
-                    z + 0.5 * sin(it.toDouble() + PI)
-                )
+            Vector3D(
+                cos(it.toDouble() + PI) * 0.5,
+                -0.3,
+                z + 0.5 * sin(it.toDouble() + PI)
             )
+        val p3 = (Vector3D(0.0, 0.5, z))
 
-        val p3 = from3DTo2D.convertTo2D(Vector3D(0.0, 0.5, z))
-
-        shapes.color = ColorFactory.yellow
-        shapes.drawTriangle(p1, p2, p3)
+        shapes3D.drawTriangle(p1, p2, p3)
 
         terminal.printWithReset(c)
     }
 }
 
+fun intersection3D() {
+    val c = CanvasFactory.createCanvas(800, 600)
+    c.fill(ColorFactory.blank)
+    val shapes3D = Shapes3D(c)
+
+    val z = 1.5
+    val it = 5
+
+    val p1 =
+        Vector3D(
+            cos(it.toDouble()) * 0.5,
+            -0.3,
+            z + 0.5 * sin(it.toDouble())
+        )
+    val p2 =
+        Vector3D(
+            cos(it.toDouble() + PI) * 0.5,
+            -0.3,
+            z + 0.5 * sin(it.toDouble() + PI)
+        )
+    val p3 = (Vector3D(0.0, 0.5, z))
+
+
+    val p12 =
+        Vector3D(
+            cos(it.toDouble() + PI / 2) * 0.5,
+            -0.3,
+            z + 0.5 * sin(it.toDouble() + PI / 2)
+        )
+    val p22 =
+        Vector3D(
+            cos(it.toDouble() + PI + PI / 2) * 0.5,
+            -0.3,
+            z + 0.5 * sin(it.toDouble() + PI + PI / 2)
+        )
+    val p32 = (Vector3D(0.0, 0.5, z))
+
+    shapes3D.drawTriangle(p1, p2, p3)
+    shapes3D.drawTriangle(p12, p22, p32, ColorFactory.purple)
+
+    CanvasSaver.saveTo(c, "intersection")
+}
+
 fun main() {
 //    animateCircle()
 //    animateSquishing()
-
     animate3D()
+
+//    intersection3D()
 }

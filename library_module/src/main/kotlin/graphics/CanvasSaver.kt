@@ -26,7 +26,12 @@ object CanvasSaver {
         }
     }
 
-    fun saveTo(canvas: Canvas, name: String, formatName: String = "png", path: String = "src/main/resources/") {
+    fun saveTo(
+        canvas: Canvas,
+        name: String,
+        formatName: String = "png",
+        path: String = "library_module/src/main/resources/"
+    ) {
         val (width, height) = canvas.getDimensions()
         val scene = canvas.getRawPixels()
 
@@ -36,7 +41,11 @@ object CanvasSaver {
         img.setRGB(0, 0, width, height, data.toIntArray(), 0, width)
 
         val file = File("$path$name.${formatName.lowercase(Locale.getDefault())}")
-        ImageIO.write(img, formatName.uppercase(Locale.getDefault()), file)
+        try {
+            ImageIO.write(img, formatName.uppercase(Locale.getDefault()), file)
+        } catch (e: Exception) {
+            println("Error while saving image: $e")
+        }
     }
 
     fun readCanvasFrom(name: String, formatName: String = "png", path: String = "src/main/resources/"): Canvas {
